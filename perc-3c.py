@@ -62,7 +62,7 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename):
         s_vec = s2vec(sentence, features, fea_hash, label)
         weight[label] += s_vec * learning_rate
         weight[predicated] -= s_vec * learning_rate
-      if index / 20000 == 0 and index % 20000 == 0:
+      if index / 20000 > 0 and index % 20000 == 0:
         print "accuracy", index, predict_sens(weight, dev_sentences, features, fea_hash)
     print "accuracy", predict_sens(weight, dev_sentences, features, fea_hash)
   return weight
