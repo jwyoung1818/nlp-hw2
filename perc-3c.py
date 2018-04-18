@@ -36,6 +36,13 @@ def s2vec(sentence, features, fea_hash, l):
       s_vec[fea_hash[feature]] += 1
   s_vec = np.array(s_vec)
   return s_vec
+def ss2vec(ss, features, fea_hash):
+  ss_vec = [[0.0 for _ in xrange(0, 3)] for _ in xrange(0, len(ss))]
+  for index in xrange(0, len(ss)):
+    sentence = ss[index][0]
+    for c in xrange(0, 3):
+      ss_vec[index][c] = s2vec(sentence, features, fea_hash, c)
+  return ss_vec
 def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=False):
   # extract features firstly
   train_sentences = sen2vec(filename, features, fea_hash)
@@ -43,6 +50,8 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=Fa
   weight = [[0.0 for _ in xrange(0, len(features))] for _ in xrange(0,3)]
   weight = np.array(weight)
   weights = []
+  train_ss = ss2vec(train_sentences, features, fea_hash)
+  #dev_ss = ss2vec(dev_sentences, features, fea_hash)
   for i in xrange(0, epoch): 
     #print i, len(train_sentences)
     for index in xrange(0, len(train_sentences)):
@@ -52,7 +61,7 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=Fa
       label = sentence_label[1]
       argmax, predicated = 0, 0
       for c in xrange(0,3):
-        s_vec = s2vec(sentence, features, fea_hash, c)
+        s_vec = train_ss[index][c]
         cv = np.dot(s_vec, weight[c])
         if h:
           if c != label:
@@ -71,11 +80,11 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=Fa
     print "accuracy", predict_sens(weight, dev_sentences, features, fea_hash)
   return weight
 
-def predict(weight, s, features, fea_hash):
+def predict(weight, s, ss_vec_i):
   argmax, predicated = 0, 0
   #sentence = np.array(sentence)
   for c in xrange(0, 3):
-    sentence = s2vec(s, features, fea_hash, c)
+    sentence = ss_vec_i[c] 
     cv = np.dot(sentence, weight[c])
     if cv > argmax:
       argmax, predicated = cv, c
@@ -83,11 +92,12 @@ def predict(weight, s, features, fea_hash):
 def predict_sens(weight, sentences, features, fea_hash):
   total = len(sentences)
   right = 0
+  ss_vec = ss2vec(sentences, features, fea_hash)
   for i  in xrange(0, len(sentences)):
     sentence_label = sentences[i]
     s = sentence_label[0]
     label = sentence_label[1]
-    predicated = predict(weight, s, features, fea_hash)
+    predicated = predict(weight, s, ss_vec[i])
     #print predicated
     if predicated == label:
       right += 1
@@ -98,7 +108,7 @@ def main():
   dev_test_filename = 'sst3/sst3.devtest'
   full_filename = 'sst3/sst3.train-full-sentences'
   #train_filename = full_filename 
-  #train_filename = dev_test_filename
+  train_filename = dev_test_filename
   epoch = 5
   #epoch = 1
   learning_rate = 0.01
