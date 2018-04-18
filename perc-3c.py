@@ -44,7 +44,8 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename):
   weights = []
   for i in xrange(0, epoch): 
     #print i, len(train_sentences)
-    for sentence_label in train_sentences:
+    for index in xrange(0, len(train_sentences)):
+      sentence_label = train_sentences[index]
       sentence = sentence_label[0]
       sentence = np.array(sentence)
       label = sentence_label[1]
@@ -61,18 +62,9 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename):
         s_vec = s2vec(sentence, features, fea_hash, label)
         weight[label] += s_vec * learning_rate
         weight[predicated] -= s_vec * learning_rate
+      if index / 20000 == 0 and index % 20000 == 0:
+        print "accuracy", index, predict_sens(weight, dev_sentences, features, fea_hash)
     print "accuracy", predict_sens(weight, dev_sentences, features, fea_hash)
-    w0 = weight[0]
-    w1 = weight[1]
-    w2 = weight[2]
-    for j in xrange(0, len(w0)):
-      w0j = w0[j]
-      w1j = w1[j]
-      w2j = w2[j]
-      #if w0j != 0 or w1j != 0 or w2j != 0:
-        #print features[j], w0j, w1j, w2j
-    weights.append(list(weight))
-    #print list(weight)
   return weight
 
 def predict(weight, s, features, fea_hash):
@@ -103,7 +95,7 @@ def main():
   full_filename = 'sst3/sst3.train-full-sentences'
   #train_filename = full_filename 
   #train_filename = dev_test_filename
-  epoch = 20
+  epoch = 5
   #epoch = 1
   learning_rate = 0.01
   #learning_rate = 1
