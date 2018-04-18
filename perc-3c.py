@@ -36,7 +36,7 @@ def s2vec(sentence, features, fea_hash, l):
       s_vec[fea_hash[feature]] += 1
   s_vec = np.array(s_vec)
   return s_vec
-def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=false):
+def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=False):
   # extract features firstly
   train_sentences = sen2vec(filename, features, fea_hash)
   dev_sentences = sen2vec(dev_filename, features, fea_hash)
@@ -105,7 +105,7 @@ def main():
   #learning_rate = 1
   features, fea_hash = extractFeatures(train_filename)
   if len(sys.argv) > 1 and sys.argv[1] == 'h':
-    weight = train(train_filename, features, fea_hash, epoch, learning_rate, dev_filename, true) 
+    weight = train(train_filename, features, fea_hash, epoch, learning_rate, dev_filename, True) 
   else:
     weight = train(train_filename, features, fea_hash, epoch, learning_rate, dev_filename)
   #dev_sentences = sen2vec(dev_filename, features, fea_hash)
