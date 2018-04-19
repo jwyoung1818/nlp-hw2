@@ -67,7 +67,6 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=Fa
       for c in xrange(0,3):
         #s_vec = s2vec(sentence, features, fea_hash, c)
         s_vec = train_ss[index][c]
-        s_vec = train_ss[index][label]
         cv = np.dot(s_vec, weight[c])
         if h:
           if c != label:
@@ -127,12 +126,25 @@ def evaluate(weight_file, features, fea_hash, dev_filename):
    print "largest weight features"
    weight = np.load(weight_file)
    features = np.array(features)
+   ws = [[],[],[]]
    for i in xrange(0, len(weight)):
      w = weight[i]
+     for j in xrange(0, len(w)):
+       ws[features[j][1]].append((features[j][1], w[j]))
      print i
      arg = np.argsort(w)
      indices = arg[len(arg)-10: len(arg)]
-     print indices
+     indices = arg[0:10]
+     #print indices
+     top_f = features[indices]
+     #print "top-10"
+     #print top_f, w[indices]
+   ws = np.array(ws)
+   for i in xrange(0, len(ws)):
+     w = ws[i]
+     print i
+     arg = np.sort(w)
+     indices = arg[len(arg)-10: len(arg)]
      top_f = features[indices]
      print "top-10"
      print top_f, w[indices]
