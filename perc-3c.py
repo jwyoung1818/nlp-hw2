@@ -43,7 +43,7 @@ def ss2vec(ss, features, fea_hash):
     for c in xrange(0, 3):
       ss_vec[index][c] = s2vec(sentence, features, fea_hash, c)
   return ss_vec
-def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=False):
+def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=False, step=10000):
   # extract features firstly
   outfile = 'accuracy'
   if h:
@@ -80,14 +80,14 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=Fa
         s_vec = s2vec(sentence, features, fea_hash, label)
         weight[label] += s_vec * learning_rate
         weight[predicated] -= s_vec * learning_rate
-      if index / 20000 > 0 and index % 20000 == 0:
-        out = str(i) + '-' + str(index/20000) + '.out'
+      if index / step > 0 and index % step == 0:
+        out = 'output/' + str(i) + '-' + str(index/step) + '.out'
         if h:
           out = out + '.hinge'
         np.save(out, weight)
         print "accuracy", index, predict_sens(weight, dev_sentences, features, fea_hash)
-        output.write(str(i) + "-" + str(index/20000) + " "  + str(predict_sens(weight, dev_sentences, features, fea_hash)) + "\n")
-    out = str(i) + '.out'
+        output.write(str(i) + "-" + str(index/step) + " "  + str(predict_sens(weight, dev_sentences, features, fea_hash)) + "\n")
+    out = 'output/' + str(i) + '.out'
     if h:
       out = out + '.hinge'
     np.save(out, weight)
