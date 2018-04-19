@@ -45,7 +45,10 @@ def ss2vec(ss, features, fea_hash):
   return ss_vec
 def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=False):
   # extract features firstly
-  output = open('accuracy', 'w+')
+  outfile = 'accuracy'
+  if h:
+    outfile += '.hinge'
+  output = open(outfile, 'w+')
   train_sentences = sen2vec(filename, features, fea_hash)
   dev_sentences = sen2vec(dev_filename, features, fea_hash)
   weight = [[0.0 for _ in xrange(0, len(features))] for _ in xrange(0,3)]
@@ -83,13 +86,13 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=Fa
           out = out + '.hinge'
         np.save(out, weight)
         print "accuracy", index, predict_sens(weight, dev_sentences, features, fea_hash)
-        output.write(str(i) + "-" + str(index/20000) + " "  + str(predict_sens(weight, dev_sentences, features, fea_hash)))
+        output.write(str(i) + "-" + str(index/20000) + " "  + str(predict_sens(weight, dev_sentences, features, fea_hash)) + "\n")
     out = str(i) + '.out'
     if h:
       out = out + '.hinge'
     np.save(out, weight)
     print "accuracy", predict_sens(weight, dev_sentences, features, fea_hash)
-    output.write(str(i) + " "  + str(predict_sens(weight, dev_sentences, features, fea_hash)))
+    output.write(str(i) + " "  + str(predict_sens(weight, dev_sentences, features, fea_hash)) + "\n")
   return weight
 
 def predict(weight, s, ss_vec_i):
@@ -120,7 +123,7 @@ def main():
   dev_test_filename = 'sst3/sst3.devtest'
   full_filename = 'sst3/sst3.train-full-sentences'
  # train_filename = full_filename 
-  train_filename = dev_test_filename
+  #train_filename = dev_test_filename
   epoch = 20
   #epoch = 1
   learning_rate = 0.01
