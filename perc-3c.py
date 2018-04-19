@@ -132,7 +132,6 @@ def evaluate(weight_file, features, fea_hash, dev_filename):
      for j in xrange(0, len(w)):
        index = int(features[j][1])
        ws[index].append((features[j][0], w[j]))
-     print i
      arg = np.argsort(w)
      indices = arg[len(arg)-10: len(arg)]
      indices = arg[0:10]
@@ -148,7 +147,7 @@ def evaluate(weight_file, features, fea_hash, dev_filename):
      to_sort = w[:,1].astype(np.float)
      arg = np.argsort(to_sort)
      indices = arg[len(arg)-10: len(arg)]
-     top_f = ws[indices]
+     top_f = w[indices]
      print "top-10"
      print top_f
    dev_sentences = sen2vec(dev_filename, features, fea_hash) 
