@@ -108,7 +108,7 @@ def main():
   dev_test_filename = 'sst3/sst3.devtest'
   full_filename = 'sst3/sst3.train-full-sentences'
   #train_filename = full_filename 
-  train_filename = dev_test_filename
+  #train_filename = dev_test_filename
   epoch = 5
   #epoch = 1
   learning_rate = 0.01
