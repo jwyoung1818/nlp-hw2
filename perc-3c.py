@@ -45,12 +45,13 @@ def ss2vec(ss, features, fea_hash):
   return ss_vec
 def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=False):
   # extract features firstly
+  output = open('accuracy', 'w+')
   train_sentences = sen2vec(filename, features, fea_hash)
   dev_sentences = sen2vec(dev_filename, features, fea_hash)
   weight = [[0.0 for _ in xrange(0, len(features))] for _ in xrange(0,3)]
   weight = np.array(weight)
   weights = []
-  #train_ss = ss2vec(train_sentences, features, fea_hash)
+  train_ss = ss2vec(train_sentences, features, fea_hash)
   #dev_ss = ss2vec(dev_sentences, features, fea_hash)
   for i in xrange(0, epoch): 
     #print i, len(train_sentences)
@@ -61,7 +62,8 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=Fa
       label = sentence_label[1]
       argmax, predicated = 0, 0
       for c in xrange(0,3):
-        s_vec = s2vec(sentence, features, fea_hash, c)
+        #s_vec = s2vec(sentence, features, fea_hash, c)
+        s_vec = train_ss[index][c]
         cv = np.dot(s_vec, weight[c])
         if h:
           if c != label:
@@ -81,11 +83,13 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=Fa
           out = out + '.hinge'
         np.save(out, weight)
         print "accuracy", index, predict_sens(weight, dev_sentences, features, fea_hash)
+        ouput.write(str(i) + "-" + str(index/20000) + " "  + str(predict_sens(weight, dev_sentences, features, fea_hash)))
     out = str(i) + '.out'
     if h:
       out = out + '.hinge'
     np.save(out, weight)
     print "accuracy", predict_sens(weight, dev_sentences, features, fea_hash)
+    ouput.write(str(i) + " "  + str(predict_sens(weight, dev_sentences, features, fea_hash)))
   return weight
 
 def predict(weight, s, ss_vec_i):
