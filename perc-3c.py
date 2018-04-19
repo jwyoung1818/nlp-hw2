@@ -130,6 +130,8 @@ def evaluate(weight_file, features, fea_hash, dev_filename):
    for i in xrange(0, len(weight)):
      w = weight[i]
      for j in xrange(0, len(w)):
+       print features[j][1]
+       features[j][1] = int(features[j][1])
        ws[features[j][1]].append((features[j][1], w[j]))
      print i
      arg = np.argsort(w)
