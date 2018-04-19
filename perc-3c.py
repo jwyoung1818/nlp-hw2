@@ -137,8 +137,9 @@ def evaluate(weight_file, features, fea_hash, dev_filename):
      indices = arg[0:10]
      #print indices
      top_f = features[indices]
-     #print "top-10"
-     #print top_f, w[indices]
+     print "top-10"
+     print top_f
+     print w[indices]
    ws = np.array(ws)
    for i in xrange(0, len(ws)):
      w = ws[i]
