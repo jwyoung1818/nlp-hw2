@@ -148,9 +148,9 @@ def evaluate(weight_file, features, fea_hash, dev_filename):
      to_sort = w[:,1].astype(np.float)
      arg = np.argsort(to_sort)
      indices = arg[len(arg)-10: len(arg)]
-     top_f = features[indices]
+     top_f = ws[indices]
      print "top-10"
-     print top_f, w[indices]
+     print top_f
    dev_sentences = sen2vec(dev_filename, features, fea_hash) 
    re, wrongs = predict_sens(weight, dev_sentences, features, fea_hash)
    print re
