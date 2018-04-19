@@ -130,7 +130,6 @@ def evaluate(weight_file, features, fea_hash, dev_filename):
    for i in xrange(0, len(weight)):
      w = weight[i]
      for j in xrange(0, len(w)):
-       print features[j][1]
        index = int(features[j][1])
        ws[index].append((features[j][0], w[j]))
      print i
@@ -147,7 +146,7 @@ def evaluate(weight_file, features, fea_hash, dev_filename):
      w = np.array(w)
      print i
      to_sort = w[:,1].astype(np.float)
-     arg = np.sort(to_sort)
+     arg = np.argsort(to_sort)
      indices = arg[len(arg)-10: len(arg)]
      top_f = features[indices]
      print "top-10"
