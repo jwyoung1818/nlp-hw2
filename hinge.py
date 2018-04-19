@@ -15,6 +15,12 @@ def extractFeatures(filename):
       if feature not in features:
         features.append(feature)
         fea_hash[feature] = len(features) - 1
+    length = len(line)
+    len_comma = words.count(',') 
+    feature = (str(length) + "-" + str(len_comma), label)
+    if feature not in features:
+      features.append(feature)
+      fea_hash[feature] = len(features) - 1
   print len(features)
   f.close
   return features, fea_hash
@@ -34,6 +40,11 @@ def s2vec(sentence, features, fea_hash, l):
     feature = (word, l)
     if feature in fea_hash:
       s_vec[fea_hash[feature]] += 1
+  length = len(" ".join(sentence))
+  len_comma = list(sentence).count(',') 
+  feature = (str(length) + "-" + str(len_comma), l)
+  if feature in fea_hash:
+    s_vec[fea_hash[feature]] += 1
   s_vec = np.array(s_vec)
   return s_vec
 def ss2vec(ss, features, fea_hash):
@@ -43,7 +54,7 @@ def ss2vec(ss, features, fea_hash):
     for c in xrange(0, 3):
       ss_vec[index][c] = s2vec(sentence, features, fea_hash, c)
   return ss_vec
-def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=False, step=10000):
+def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=False, step=60000):
   # extract features firstly
   outfile = 'accuracy'
   if h:
@@ -163,7 +174,7 @@ def main():
   dev_test_filename = 'sst3/sst3.devtest'
   full_filename = 'sst3/sst3.train-full-sentences'
  # train_filename = full_filename 
-  train_filename = dev_test_filename
+  #train_filename = dev_test_filename
   epoch = 20
   #epoch = 1
   learning_rate = 0.01
