@@ -123,8 +123,8 @@ def predict_sens(weight, sentences, features, fea_hash):
 def evaluate(weight_file, features, fea_hash, dev_filename):
    print "largest weight features"
    weight = np.load(weight_file)
+   ws = weight
    features = np.array(features)
-   ws = weight[0] + weight[1] + weight[2]
    we1 = []
    we2 = []
    we3 = []
@@ -139,14 +139,14 @@ def evaluate(weight_file, features, fea_hash, dev_filename):
    we1 = np.array(we1)
    we2 = np.array(we2)
    we3 = np.array(we3)
-   print list(we1[np.argsort(we1[:,1])][:,0])[-10:-1]
-   print list(we2[np.argsort(we2[:,1])][:,0])[-10:-1]
-   print list(we3[np.argsort(we3[:,1])][:,0])[-10:-1]
+   print list(we1[np.argsort(we1[:,1])])[-20:-1]
+   print list(we2[np.argsort(we2[:,1])])[-20:-1]
+   print list(we3[np.argsort(we3[:,1])])[-20:-1]
    dev_sentences = sen2vec(dev_filename, features, fea_hash) 
    re, wrongs = predict_sens(weight, dev_sentences, features, fea_hash)
    print re
    for wrong in wrongs:
-     print wrong
+     print " ".join(wrong[0][0]), wrong[0][1], wrong[1]
    return re, wrongs
 def main():
   train_filename = 'sst3/sst3.train'
@@ -159,14 +159,25 @@ def main():
   #epoch = 1
   learning_rate = 0.01
   #learning_rate = 1
-  features, fea_hash = extractFeatures(train_filename)
-  np.save('output-1/features', features)
   if len(sys.argv) > 1 and sys.argv[1] == 'h':
+    features, fea_hash = extractFeatures(train_filename)
+    np.save('output-1/features', features)
     weight = train(train_filename, features, fea_hash, epoch, learning_rate, dev_filename, True) 
   elif len(sys.argv) > 2 and sys.argv[1] == 'e':
+    features = np.load('features.npy')
+    features = list(features)
+    print len(features)
+    fea_hash = {}
+    for i in xrange(0, len(features)):
+     k = features[i]
+     key = ( k[0],int( k[1]) )
+     #print key
+     fea_hash[key] = i
     weight_file = sys.argv[2]
     evaluate(weight_file, features, fea_hash, dev_test_filename)
   else:
+    features, fea_hash = extractFeatures(train_filename)
+    np.save('output-1/features', features)
     weight = train(train_filename, features, fea_hash, epoch, learning_rate, dev_filename)
   #dev_sentences = sen2vec(dev_filename, features, fea_hash)
   
