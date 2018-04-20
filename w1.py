@@ -43,7 +43,7 @@ def ss2vec(ss, features, fea_hash):
     for c in xrange(0, 3):
       ss_vec[index][c] = s2vec(sentence, features, fea_hash, c)
   return ss_vec
-def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=False, step=10000):
+def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=False, step=20000):
   # extract features firstly
   outfile = 'accuracy'
   if h:
@@ -169,10 +169,10 @@ def main():
     print len(features)
     fea_hash = {}
     for i in xrange(0, len(features)):
-     k = features[i]
-     key = ( k[0],int( k[1]) )
-     #print key
-     fea_hash[key] = i
+      k = features[i]
+      key = ( k[0],int( k[1]) )
+      #print key
+      fea_hash[key] = i
     weight_file = sys.argv[2]
     evaluate(weight_file, features, fea_hash, dev_test_filename)
   else:

@@ -5,19 +5,35 @@ def extractFeatures(filename):
   f = open(filename, 'r')
   features = []
   fea_hash = {}
+  ff = []
+  fc = {}
   for line in f:
     word_label = line.strip().split('\t')
     label = int(word_label[1])
     words = word_label[0].split(' ')
     for word in words:
-      feature = (word, words.count(word), label)
+      c = word + '-' + str(words.count(word))
+      feature = (word, label)
+      f2 = (c, label)
       #print feature
       if feature not in features:
         features.append(feature)
-        fea_hash[feature] = len(features) - 1
-  print len(features)
+        fc[feature] = 1 
+      else: 
+        fc[feature] += 1
+      if f2 not in features:
+        features.append(f2)
+        fc[f2] = 1
+      else:
+        fc[f2] += 1
+  for fe in fc:
+    if fc[fe] >= 5:
+      ff.append(fe)
+      fea_hash[fe] = len(ff) - 1
+  print len(ff)
   f.close
-  return features, fea_hash
+  #return features, fea_hash
+  return ff, fea_hash
 def sen2vec(filename, features, fea_hash, l = None):
   f = open(filename, 'r')
   sen_vectors = []
@@ -31,9 +47,13 @@ def sen2vec(filename, features, fea_hash, l = None):
 def s2vec(sentence, features, fea_hash, l):
   s_vec = [0.0 for _ in xrange(0, len(features))]
   for word in sentence:
-    feature = (word, list(sentence).count(word), l)
+    c = word + '-' + str(list(sentence).count(word)) 
+    feature = (word, l)
+    f2 = (c, l)
     if feature in fea_hash:
       s_vec[fea_hash[feature]] += 1
+    if f2 in fea_hash:
+      s_vec[fea_hash[f2]] += 1
   s_vec = np.array(s_vec)
   return s_vec
 def ss2vec(ss, features, fea_hash):
