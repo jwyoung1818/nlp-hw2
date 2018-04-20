@@ -139,9 +139,9 @@ def evaluate(weight_file, features, fea_hash, dev_filename):
    we1 = np.array(we1)
    we2 = np.array(we2)
    we3 = np.array(we3)
-   print list(we1[np.argsort(we1[:,1])])[-20:-1]
-   print list(we2[np.argsort(we2[:,1])])[-20:-1]
-   print list(we3[np.argsort(we3[:,1])])[-20:-1]
+   print list((we1[np.argsort(we1[:,1])])[:,0])[-20:-1]
+   print list((we2[np.argsort(we2[:,1])])[:,0])[-20:-1]
+   print list((we3[np.argsort(we3[:,1])])[:,0])[-20:-1]
    dev_sentences = sen2vec(dev_filename, features, fea_hash) 
    re, wrongs = predict_sens(weight, dev_sentences, features, fea_hash)
    print re
