@@ -139,9 +139,9 @@ def evaluate(weight_file, features, fea_hash, dev_filename):
    we1 = np.array(we1)
    we2 = np.array(we2)
    we3 = np.array(we3)
-   print list((we1[np.argsort(we1[:,1])])[:,0])[-20:-1]
-   print list((we2[np.argsort(we2[:,1])])[:,0])[-20:-1]
-   print list((we3[np.argsort(we3[:,1])])[:,0])[-20:-1]
+   print list((we1[np.argsort(we1[:,1].astype(np.float))])[:,0])[-11:-1]
+   print list((we2[np.argsort(we2[:,1].astype(np.float))])[:,0])[-11:-1]
+   print list((we3[np.argsort(we3[:,1].astype(np.float))])[:,0])[-11:-1]
    dev_sentences = sen2vec(dev_filename, features, fea_hash) 
    re, wrongs = predict_sens(weight, dev_sentences, features, fea_hash)
    print re
@@ -164,7 +164,7 @@ def main():
     np.save('output-1/features', features)
     weight = train(train_filename, features, fea_hash, epoch, learning_rate, dev_filename, True) 
   elif len(sys.argv) > 2 and sys.argv[1] == 'e':
-    features = np.load('features.npy')
+    features = np.load('output-1/features.npy')
     features = list(features)
     print len(features)
     fea_hash = {}
