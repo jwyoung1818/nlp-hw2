@@ -51,9 +51,8 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=Fa
   output = open(outfile, 'w+')
   train_sentences = sen2vec(filename, features, fea_hash)
   dev_sentences = sen2vec(dev_filename, features, fea_hash)
-  weight = [[0.0 for _ in xrange(0, len(features))] for _ in xrange(0,3)]
+  weight = [0.0 for _ in xrange(0, len(features))]
   weight = np.array(weight)
-  weights = []
   train_ss = ss2vec(train_sentences, features, fea_hash)
   #dev_ss = ss2vec(dev_sentences, features, fea_hash)
   for i in xrange(0, epoch): 
@@ -67,7 +66,7 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=Fa
       for c in xrange(0,3):
         #s_vec = s2vec(sentence, features, fea_hash, c)
         s_vec = train_ss[index][c]
-        cv = np.dot(s_vec, weight[c])
+        cv = np.dot(s_vec, weight)
         if h:
           if c != label:
             cv += 1
@@ -77,18 +76,17 @@ def train(filename, features, fea_hash, epoch, learning_rate, dev_filename, h=Fa
           predicated = c
       if label != predicated:
         #print "update", i, argmax, label, predicated, train_sentences.index(sentence_label)
-        s_vec = s2vec(sentence, features, fea_hash, label)
-        weight[label] += s_vec * learning_rate
-        weight[predicated] -= s_vec * learning_rate
+        weight += train_ss[index][label] * learning_rate
+        weight -= train_ss[index][predicated] * learning_rate
       if index / step > 0 and index % step == 0:
-        out = 'output/' + str(i) + '-' + str(index/step) + '.out'
+        out = 'output-1/' + str(i) + '-' + str(index/step) + '.out'
         if h:
           out = out + '.hinge'
         np.save(out, weight)
         re, wrongs = predict_sens(weight, dev_sentences, features, fea_hash)
         print "accuracy", index, re
         output.write(str(i) + "-" + str(index/step) + " "  + str(re) + "\n")
-    out = 'output/' + str(i) + '.out'
+    out = 'output-1/' + str(i) + '.out'
     if h:
       out = out + '.hinge'
     np.save(out, weight)
@@ -102,7 +100,7 @@ def predict(weight, s, ss_vec_i):
   #sentence = np.array(sentence)
   for c in xrange(0, 3):
     sentence = ss_vec_i[c] 
-    cv = np.dot(sentence, weight[c])
+    cv = np.dot(sentence, weight)
     if cv >= argmax:
       argmax, predicated = cv, c
   return predicated
@@ -155,14 +153,14 @@ def main():
   dev_filename = 'sst3/sst3.dev'
   dev_test_filename = 'sst3/sst3.devtest'
   full_filename = 'sst3/sst3.train-full-sentences'
- # train_filename = full_filename 
+  #train_filename = full_filename 
   #train_filename = dev_test_filename
   epoch = 20
   #epoch = 1
   learning_rate = 0.01
   #learning_rate = 1
   features, fea_hash = extractFeatures(train_filename)
-  np.save('features', features)
+  np.save('output-1/features', features)
   if len(sys.argv) > 1 and sys.argv[1] == 'h':
     weight = train(train_filename, features, fea_hash, epoch, learning_rate, dev_filename, True) 
   elif len(sys.argv) > 2 and sys.argv[1] == 'e':

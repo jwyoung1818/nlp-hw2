@@ -15,9 +15,10 @@ def extractFeatures(filename):
       if feature not in features:
         features.append(feature)
         fea_hash[feature] = len(features) - 1
-    length = len(line)
+    length = len(line.split(" "))
     len_comma = words.count(',') 
-    feature = (str(length) + "-" + str(len_comma), label)
+    #feature = (str(length) + "-" + str(len_comma), label)
+    feature = (str(length), label)
     if feature not in features:
       features.append(feature)
       fea_hash[feature] = len(features) - 1
@@ -40,9 +41,10 @@ def s2vec(sentence, features, fea_hash, l):
     feature = (word, l)
     if feature in fea_hash:
       s_vec[fea_hash[feature]] += 1
-  length = len(" ".join(sentence))
+  length = len(sentence)
   len_comma = list(sentence).count(',') 
   feature = (str(length) + "-" + str(len_comma), l)
+  feature = (str(length), l)
   if feature in fea_hash:
     s_vec[fea_hash[feature]] += 1
   s_vec = np.array(s_vec)
